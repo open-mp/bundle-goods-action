@@ -1,3 +1,5 @@
-<!--components/goods/goods.wxml-->
-<text>pullDownCount: {{pullDownCount}}</text>
-<button bindtap="fireEvent">触发事件</button>
+<!--components/sku/sku.wxml-->
+<view class='goods-action-container'>
+  <text class="message">用户选择的数量: {{count}}</text>
+  <button class="btn" bindtap="pullGoodsDetail">下单</button>
+</view>

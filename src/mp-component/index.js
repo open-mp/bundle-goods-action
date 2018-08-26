@@ -1,37 +1,37 @@
-// components/goods/goods.js
+// components/sku/sku.js
 Component({
-  properties: {
-    id: String 
-  },
+    properties: {
+        id: String
+    },
 
-  data: {
-    pullDownCount: 0
-  },
-  pageUtil: null,
-  methods: {
-    start({ pageUtil }) {
-      this.pageUtil = pageUtil;
+    data: {
+        count: 0
     },
-    receiveData(data){
-      console.log(data)
+    pageUtil: null,
+
+    methods: {
+        start({pageUtil}) {
+            this.pageUtil = pageUtil;
+            pageUtil.addListener(this.id, "pull-down-count", (data) => {
+                this.setData({count: data});
+            });
+        },
+        pullGoodsDetail() {
+            let componentList = this.pageUtil.getServiceImplList('goods-detail');
+            let goodsDetail = componentList[0] && componentList[0].getGoodsDetail();
+            this.setData({
+                count: goodsDetail.count
+            })
+        }
     },
-    onPullDownRefresh() {
-      this.setData({ pullDownCount: ++this.data.pullDownCount});
-      wx.stopPullDownRefresh();
+    attached() {
+        this.triggerEvent("inited", {
+            instance: this,
+            id: this.id,
+            pageEvent: ["pull-down-refresh"]
+        })
     },
-    fireEvent() {
-      this.pageUtil.emit('pull-down-count', this.data.pullDownCount);
-    }
-  },
-  created () {},
-  attached () {
-    this.triggerEvent("inited", {
-      instance: this,
-      id: this.id,
-      interfaces: ['goods'], // 组件实现的接口 其他组件可以通过接口名查询实现组件的接口
-      pageEvent: ["pull-down-refresh"]
-    })
-  },
-  moved() { },
-  detached () { },
-})
+    detached() {
+        this.pageUtil.removeComponent(this.id);
+    },
+});
